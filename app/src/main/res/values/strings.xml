@@ -1,3 +1,22 @@
 <resources>
-    <string name="app_name">Assesmen1</string>
+    <string name="app_name">Mrs. Clean</string>
+    <string name="type">Tipe</string>
+    <string name="layanan">Layanan</string>
+    <string name="layanan_normal">Normal</string>
+    <string name="layanan_express">Express</string>
+    <string name="tinggi_badan">Tinggi Badan</string>
+    <string name="cuci_setrika">Cuci Setrika</string>
+    <string name="cuci_kering">Cuci Kering</string>
+    <string name="setrika">Setrika</string>
+    <string name="hitung">Hitung</string>
+    <string name="bmi_x">BMI: %1$.2f</string>
+    <string name="kurus">Kurus</string>
+    <string name="ideal">Ideal</string>
+    <string name="gemuk">Gemuk</string>
+    <string name="input_invalid">Tidak boleh kosong.</string>
+    <string name="bagikan">Bagikan</string>
+    <string name="bagikan_template">Berat Badan : %1$s kg\nTinggi Badan : %2$s cm\nJenis Kelamin : %3$s\n\nBMI : %4$s \n%5$s</string>
+    <string name="tentang_aplikasi">Tentang Aplikasi</string>
+    <string name="copyright">Hitung BMI merupakan sebuah aplikasi Android untuk menghitung body mass index (BMI) sehingga seseorang dapat mengetahui apakah berat badannya ideal, gemuk, atau kurus.\n \nAplikasi ini dibuat untuk kelas Mobpro1.\n\nCopyright 2021-2024 Indra Azimi.\nAll rights reserved.</string>
+    <string name="kembali">Kembali</string>
 </resources>
