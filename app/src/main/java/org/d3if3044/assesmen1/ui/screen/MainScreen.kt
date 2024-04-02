@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,16 +36,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -52,8 +52,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.d3if3044.assesmen1.R
+import org.d3if3044.assesmen1.model.Pakaian
 import org.d3if3044.assesmen1.navigation.Screen
-import kotlin.math.pow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +81,7 @@ fun MainScreen(navController: NavHostController) {
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Info,
-                            contentDescription = stringResource(R.string.tentang_aplikasi),
+                            contentDescription = stringResource(R.string.informasi_bantuan),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -98,11 +98,13 @@ fun MainScreen(navController: NavHostController) {
 @SuppressLint("StringFormatMatches")
 @Composable
 fun ScreenContent(modifier: Modifier) {
+    var atasan by rememberSaveable { mutableStateOf("") }
+    var bawahan by rememberSaveable { mutableStateOf("") }
+    var underwear by rememberSaveable { mutableStateOf("") }
+    var jilbab by rememberSaveable { mutableStateOf("") }
+    var kaoskaki by rememberSaveable { mutableStateOf("") }
     var berat by rememberSaveable { mutableStateOf("") }
     var beratError by rememberSaveable { mutableStateOf(false) }
-
-    var tinggi by rememberSaveable { mutableStateOf("") }
-    var tinggiError by rememberSaveable { mutableStateOf(false) }
 
     val tipe = listOf(
         stringResource(id = R.string.cuci_setrika),
@@ -113,11 +115,10 @@ fun ScreenContent(modifier: Modifier) {
         stringResource(id = R.string.layanan_normal),
         stringResource(id = R.string.layanan_express)
     )
-    var tipeCuci by rememberSaveable { mutableStateOf(tipe[0]) }
-    var layananCuci by rememberSaveable { mutableStateOf(layanan[0]) }
+    var selectedTipe by rememberSaveable { mutableStateOf(tipe[0]) }
+    var selectedLayanan by rememberSaveable { mutableStateOf(layanan[0]) }
 
-    var bmi by rememberSaveable { mutableFloatStateOf(0f) }
-    var kategori by rememberSaveable { mutableIntStateOf(0) }
+    var hargaTotal by rememberSaveable { mutableFloatStateOf(0f) }
 
     val context = LocalContext.current
 
@@ -138,15 +139,16 @@ fun ScreenContent(modifier: Modifier) {
         Row(
             modifier = Modifier
                 .padding(top = 6.dp, bottom = 8.dp)
+                .fillMaxWidth()
         ) {
             tipe.forEach { text ->
                 GenderOption(
                     label = text,
-                    isSelected = tipeCuci == text,
+                    isSelected = selectedTipe == text,
                     modifier = Modifier
                         .selectable(
-                            selected = tipeCuci == text,
-                            onClick = { tipeCuci = text },
+                            selected = selectedTipe == text,
+                            onClick = { selectedTipe = text },
                             role = Role.RadioButton
                         )
                         .weight(1f),
@@ -160,16 +162,16 @@ fun ScreenContent(modifier: Modifier) {
         )
         Row(
             modifier = Modifier
-                .padding(top = 6.dp, bottom = 8.dp)
+                .padding(top = 6.dp)
         ) {
             layanan.forEach { text ->
                 ServiceOption(
                     label = text,
-                    isSelected = layananCuci == text,
+                    isSelected = selectedLayanan == text,
                     modifier = Modifier
                         .selectable(
-                            selected = layananCuci == text,
-                            onClick = { layananCuci = text },
+                            selected = selectedLayanan == text,
+                            onClick = { selectedLayanan = text },
                             role = Role.RadioButton
                         )
                         .weight(1f),
@@ -177,89 +179,183 @@ fun ScreenContent(modifier: Modifier) {
             }
         }
         Column (
-            modifier = modifier
-                .clip(MaterialTheme.shapes.medium)
-                .shadow(4.dp, shape = MaterialTheme.shapes.medium)
-                .padding(16.dp),
+            modifier = Modifier.padding(top = 32.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row (
-                modifier = modifier
-                    .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                DetailPakaian(Pakaian("Atasan", R.drawable.shirt))
+                Text(
+                    text = stringResource(id = R.string.atasan),
+                    style = MaterialTheme.typography.displaySmall
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                OutlinedTextField(
+                    shape = MaterialTheme.shapes.small,
+                    value = atasan,
+                    onValueChange = { atasan = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    modifier = Modifier.width(80.dp)
+                )
+            }
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                DetailPakaian(Pakaian("Bawahan", R.drawable.pant))
+                Text(
+                    text = stringResource(id = R.string.bawahan),
+                    style = MaterialTheme.typography.displaySmall
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                OutlinedTextField(
+                    shape = MaterialTheme.shapes.small,
+                    value = bawahan,
+                    onValueChange = { bawahan = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    modifier = Modifier.width(80.dp)
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-
+                DetailPakaian(Pakaian("Underwear", R.drawable.underwear))
+                Text(
+                    text = stringResource(id = R.string.underwear),
+                    style = MaterialTheme.typography.displaySmall
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                OutlinedTextField(
+                    shape = MaterialTheme.shapes.small,
+                    value = underwear,
+                    onValueChange = { underwear = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    modifier = Modifier.width(80.dp)
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                DetailPakaian(Pakaian("Jilbab", R.drawable.scarf))
+                Text(
+                    text = stringResource(id = R.string.jilbab),
+                    style = MaterialTheme.typography.displaySmall
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                OutlinedTextField(
+                    shape = MaterialTheme.shapes.small,
+                    value = jilbab,
+                    onValueChange = { jilbab = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    modifier = Modifier.width(80.dp)
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                DetailPakaian(Pakaian("Kaos Kaki", R.drawable.socks))
+                Text(
+                    text = stringResource(id = R.string.kaos_kaki),
+                    style = MaterialTheme.typography.displaySmall
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                OutlinedTextField(
+                    shape = MaterialTheme.shapes.small,
+                    value = kaoskaki,
+                    onValueChange = { kaoskaki = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    modifier = Modifier.width(80.dp)
+                )
             }
         }
-        OutlinedTextField(
-            value = berat,
-            onValueChange = { berat = it },
-            label = { Text(text = stringResource(R.string.layanan)) },
-            isError = beratError,
-            trailingIcon = { IconPicker(beratError, "kg" ) },
-            supportingText = { ErrorHint(beratError)},
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = tinggi,
-            onValueChange = { tinggi = it },
-            label = { Text(text = stringResource(R.string.tinggi_badan)) },
-            isError = tinggiError,
-            trailingIcon = { IconPicker(tinggiError, "cm" ) },
-            supportingText = { ErrorHint(tinggiError)},
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(id = R.string.berat),
+                style = MaterialTheme.typography.displayMedium
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            OutlinedTextField(
+                shape = MaterialTheme.shapes.medium,
+                value = berat,
+                onValueChange = { berat = it },
+                isError = beratError,
+                trailingIcon = { IconPicker(beratError, "kg" ) },
+                supportingText = { ErrorHint(beratError)},
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                modifier = Modifier.width(100.dp)
+            )
+        }
         Button(
             onClick = {
                 beratError = (berat == "" || berat == "0")
-                tinggiError = (tinggi == "" || tinggi == "0")
-                if (beratError || tinggiError) return@Button
+                if (beratError) return@Button
 
-                bmi = hitungBmi(berat.toFloat(), tinggi.toFloat())
-                kategori = getKategori(bmi, tipeCuci == tipe[0])
+                hargaTotal = hitungLaundry(berat.toFloat(), selectedTipe, selectedLayanan)
             },
             modifier = Modifier.padding(top = 8.dp),
             contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
         ) {
-            Text(text = stringResource(R.string.hitung))
+            Text(text = stringResource(R.string.proses))
         }
-        if (bmi != 0f) {
+        if (hargaTotal != 0f) {
             Divider(
                 modifier = Modifier.padding(vertical = 8.dp),
                 thickness = 1.dp
             )
             Text(
-                text = stringResource(R.string.bmi_x, bmi),
-                style = MaterialTheme.typography.titleLarge
-            )
-            Text(
-                text = stringResource(kategori).uppercase(),
-                style = MaterialTheme.typography.headlineLarge
+                text = stringResource(R.string.harga, hargaTotal),
+                style = MaterialTheme.typography.displayMedium
             )
             Button(
                 onClick = {
                     shareData(
                         context = context,
                         message = context.getString(R.string.bagikan_template,
-                            berat, tinggi, tipeCuci, bmi,
-                            context.getString(kategori).uppercase())
+                            atasan, bawahan, underwear, jilbab, kaoskaki, selectedTipe, selectedLayanan, berat, hargaTotal)
                     )
                 },
                 modifier = Modifier.padding(top = 8.dp),
                 contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
             ) {
-                Text(text = stringResource(R.string.bagikan))
+                Text(text = stringResource(R.string.kirim))
             }
         }
     }
@@ -295,28 +391,43 @@ fun ServiceOption(label: String, isSelected: Boolean, modifier: Modifier) {
         )
     }
 }
-private fun hitungBmi(berat: Float, tinggi: Float): Float {
-    return berat/(tinggi/100).pow(2)
-}
-
-private fun getKategori(bmi: Float, isMale: Boolean): Int {
-    return if (isMale) {
-        when {
-            bmi < 20.5 -> R.string.kurus
-            bmi >= 27.0 -> R.string.gemuk
-            else -> R.string.ideal
-        }
-    } else {
-        when {
-            bmi < 18.5 -> R.string.kurus
-            bmi >= 25.0 -> R.string.gemuk
-            else -> R.string.ideal
-        }
+@Composable
+fun DetailPakaian(pakaian: Pakaian) {
+    Column (
+        modifier = Modifier
+            .padding(8.dp)
+    ) {
+        Image(
+            painter = painterResource(id = pakaian.imageResId),
+            contentDescription = stringResource(R.string.gambar_pakaian, pakaian.nama),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.size(50.dp)
+        )
     }
 }
+fun hitungLaundry(berat: Float, jenisCuci: String, jenisLayanan: String): Float {
+    val hargaCuciSetrika = 5000f
+    val hargaCuciKering = 3000f
+    val hargaSetrika = 1000f
+    val hargaLayananExpress = 1.5f
+
+    var totalPrice = when (jenisCuci) {
+        "Cuci Setrika" -> berat * hargaCuciSetrika
+        "Cuci Kering" -> berat * hargaCuciKering
+        "Setrika" -> berat * hargaSetrika
+        else -> 0f // Tipe cucian tidak valid
+    }
+
+    if (jenisLayanan == "Express") {
+        totalPrice *= hargaLayananExpress
+    }
+
+    return totalPrice
+}
+
 private fun shareData(context: Context, message: String) {
     val shareIntent = Intent(Intent.ACTION_SEND).apply {
-        type = "text/plain"
+        type = "text/plain/float"
         putExtra(Intent.EXTRA_TEXT, message)
     }
     if (shareIntent.resolveActivity(context.packageManager) != null) {

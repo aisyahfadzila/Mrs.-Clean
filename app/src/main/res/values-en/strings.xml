@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mrs. Clean</string>
+    <string name="type">Types</string>
+    <string name="layanan">Services</string>
+    <string name="layanan_normal">Normal</string>
+    <string name="layanan_express">Express</string>
+    <string name="cuci_setrika">Wash and Iron</string>
+    <string name="cuci_kering">Wash</string>
+    <string name="setrika">Iron</string>
+    <string name="gambar_pakaian">Quantity %1$s</string>
+    <string name="atasan">Tops</string>
+    <string name="bawahan">Bottoms</string>
+    <string name="underwear">Underwear</string>
+    <string name="jilbab">Hijab</string>
+    <string name="kaos_kaki">Socks</string>
+    <string name="berat">Weight</string>
+    <string name="proses">Process</string>
+    <string name="harga">Price</string>
+    <string name="input_invalid">Can not be empty</string>
+    <string name="bagikan_template">Tops : %1$s Bottoms : %2$s Underwears : %3$s Hijabs : %4$s Socks : %5$s  Type : %6$s Service : %7$s  Weight : %8$s kg  Price : Rp %9$.2f</string>
+    <string name="informasi_bantuan">Informasi dan Bantuan</string>
+    <string name="copyright">Mrs. Clean is an application intended for laundry service providers to assist in recording customer orders. This application can also send customer order details via other applications, for example WhatsApp. If you need help, contact: developermrsclean@gmail.com Copyright 2024-2025 Aisyah Fadzila Hani. All rights reserved.</string>
+    <string name="mrs.clean">Picture of Laundry Mrs. Clean</string>
+    <string name="kembali">Back</string>
+    <string name="kirim">Send</string>
+    <string name="bagikan">Share</string>
+</resources>

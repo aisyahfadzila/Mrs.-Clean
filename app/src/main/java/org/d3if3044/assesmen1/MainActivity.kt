@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import org.d3if3044.assesmen1.model.Pakaian
 import org.d3if3044.assesmen1.navigation.SetupNavGraph
 import org.d3if3044.assesmen1.ui.theme.AppTheme
 
